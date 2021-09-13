@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProjectModule } from './project/project.module';
+import { AppModule as ProjectAppModule } from './app/app.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProjectModule } from './project/project.module';
       installSubscriptionHandlers: true,
     }),
     ProjectModule,
+    ProjectAppModule,
   ],
   controllers: [AppController],
   providers: [AppService],
