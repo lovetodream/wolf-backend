@@ -13,7 +13,9 @@ import { AppModule as ProjectAppModule } from './app/app.module';
     MongooseModule.forRoot(process.env.MONGODB, { dbName: 'wolf' }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
-      installSubscriptionHandlers: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
     ProjectModule,
     ProjectAppModule,
