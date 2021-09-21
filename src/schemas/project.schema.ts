@@ -15,6 +15,33 @@ export class Project {
   @Field()
   name: string;
 
+  @Prop()
+  @Field()
+  archived: boolean;
+
+  @Prop()
+  @Field()
+  softDeleted: boolean;
+
+  @Prop()
+  @Field({ nullable: true })
+  alias?: string;
+
+  @Prop()
+  @Field({ nullable: true })
+  url?: string;
+
+  @Prop()
+  @Field({ nullable: true })
+  bio?: string;
+
+  @Prop()
+  @Field({ nullable: true })
+  description?: string;
+
+  @Prop()
+  icon?: Buffer;
+
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'App' }] })
   @Field(() => [App])
   app: App[];
