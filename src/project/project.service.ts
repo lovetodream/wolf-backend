@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DeleteResult } from 'src/helper/delete-result';
 import { Project, ProjectDocument } from 'src/schemas/project.schema';
+import { ArchiveProjectDto } from './dto/archive-project.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { DeleteProjectDto } from './dto/delete-project.dto';
 
@@ -43,6 +44,12 @@ export class ProjectService {
     const project = new Project();
     project.name = dto.name;
     return this.projectModel.create(project);
+  }
+
+  async archive(dto: ArchiveProjectDto): Promise<ProjectDocument> {
+    const project = await this.projectModel.findById(dto.id);
+    project.archived = true;
+    return project.save();
   }
 
   async delete(dto: DeleteProjectDto): Promise<DeleteResult> {
