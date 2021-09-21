@@ -1,6 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { DeleteResult } from 'src/helper/delete-result';
 import { Project } from 'src/schemas/project.schema';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { DeleteProjectDto } from './dto/delete-project.dto';
 import { ProjectService } from './project.service';
 
 @Resolver()
@@ -22,5 +24,10 @@ export class ProjectResolver {
   @Mutation(() => Project)
   async createProject(@Args() args: CreateProjectDto): Promise<Project> {
     return this.projectService.create(args);
+  }
+
+  @Mutation(() => DeleteResult)
+  async deleteProject(@Args() args: DeleteProjectDto): Promise<DeleteResult> {
+    return this.projectService.delete(args);
   }
 }
