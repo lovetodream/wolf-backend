@@ -39,6 +39,9 @@ export class Project {
   @Field({ nullable: true })
   description?: string;
 
+  @Field({ nullable: true })
+  pin?: string;
+
   @Prop()
   @Field({ nullable: true })
   avatar?: string;
