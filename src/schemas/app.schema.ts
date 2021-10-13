@@ -24,6 +24,10 @@ export class App {
   @Field(() => String)
   _id: MongooseSchema.Types.ObjectId;
 
+  @Prop()
+  @Field()
+  name: string;
+
   @Prop({ enum: appTypeValues, required: true })
   @Field(() => AppType)
   type: AppType;
