@@ -39,12 +39,19 @@ export class Project {
   @Field({ nullable: true })
   description?: string;
 
+  @Prop()
+  @Field({ nullable: true })
+  avatar?: string;
+
+  // MARK: Security features
+
+  @Prop()
   @Field({ nullable: true })
   pin?: string;
 
   @Prop()
   @Field({ nullable: true })
-  avatar?: string;
+  recoveryEmail?: string;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'App' }] })
   @Field(() => [App])
