@@ -10,6 +10,7 @@ import { Project, ProjectDocument } from 'src/schemas/project.schema';
 import { ArchiveProjectDto } from './dto/archive-project.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { DeleteProjectDto } from './dto/delete-project.dto';
+import { UpdateGeneralProjectDto } from './dto/update-general-project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -44,6 +45,16 @@ export class ProjectService {
     const project = new Project();
     project.name = dto.name;
     return this.projectModel.create(project);
+  }
+
+  async updateGeneral(dto: UpdateGeneralProjectDto): Promise<ProjectDocument> {
+    const project = await this.projectModel.findById(dto.id);
+    project.name = dto.name;
+    project.bio = dto.bio;
+    project.alias = dto.alias;
+    project.description = dto.description;
+    project.alias = dto.alias;
+    return project.save();
   }
 
   async archive(dto: ArchiveProjectDto): Promise<ProjectDocument> {

@@ -28,6 +28,13 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Project)
+  async updateGeneralProjectInfo(
+    @Args() args: UpdateGeneralProjectDto,
+  ): Promise<Project> {
+    return this.projectService.updateGeneral(args);
+  }
+
+  @Mutation(() => Project)
   async archiveProject(@Args() args: ArchiveProjectDto): Promise<Project> {
     return this.projectService.archive(args);
   }
