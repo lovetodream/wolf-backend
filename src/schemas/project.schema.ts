@@ -53,6 +53,10 @@ export class Project {
   @Field({ nullable: true })
   recoveryEmail?: string;
 
+  @Prop({ default: false })
+  @Field()
+  strictMode: boolean;
+
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'App' }] })
   @Field(() => [App])
   app: App[];
