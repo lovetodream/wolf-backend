@@ -1,3 +1,5 @@
+import { createAvatar } from '@dicebear/avatars';
+import * as style from '@dicebear/avatars-bottts-sprites';
 import {
   ConflictException,
   Injectable,
@@ -10,7 +12,9 @@ import { Project, ProjectDocument } from 'src/schemas/project.schema';
 import { ArchiveProjectDto } from './dto/archive-project.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { DeleteProjectDto } from './dto/delete-project.dto';
+import { ResetProjectAvatarDto } from './dto/reset-project-avatar.dto';
 import { UpdateGeneralProjectDto } from './dto/update-general-project.dto';
+import { UpdateProjectAvatarDto } from './dto/update-project-avatar.dto';
 
 @Injectable()
 export class ProjectService {
@@ -44,6 +48,11 @@ export class ProjectService {
   async create(dto: CreateProjectDto): Promise<ProjectDocument> {
     const project = new Project();
     project.name = dto.name;
+    const avatar = createAvatar(style, {
+      seed: dto.name,
+      dataUri: true,
+    });
+    project.avatar = avatar;
     return this.projectModel.create(project);
   }
 
@@ -54,6 +63,22 @@ export class ProjectService {
     project.alias = dto.alias;
     project.description = dto.description;
     project.alias = dto.alias;
+    return project.save();
+  }
+
+  async updateAvatar(dto: UpdateProjectAvatarDto): Promise<ProjectDocument> {
+    const project = await this.projectModel.findById(dto.id);
+    project.avatar = dto.avatar;
+    return project.save();
+  }
+
+  async resetAvatar(dto: ResetProjectAvatarDto): Promise<ProjectDocument> {
+    const project = await this.projectModel.findById(dto.id);
+    const avatar = createAvatar(style, {
+      seed: project.name,
+      dataUri: true,
+    });
+    project.avatar = avatar;
     return project.save();
   }
 

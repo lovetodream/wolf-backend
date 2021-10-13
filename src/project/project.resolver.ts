@@ -4,6 +4,9 @@ import { Project } from 'src/schemas/project.schema';
 import { ArchiveProjectDto } from './dto/archive-project.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { DeleteProjectDto } from './dto/delete-project.dto';
+import { ResetProjectAvatarDto } from './dto/reset-project-avatar.dto';
+import { UpdateGeneralProjectDto } from './dto/update-general-project.dto';
+import { UpdateProjectAvatarDto } from './dto/update-project-avatar.dto';
 import { ProjectService } from './project.service';
 
 @Resolver()
@@ -32,6 +35,20 @@ export class ProjectResolver {
     @Args() args: UpdateGeneralProjectDto,
   ): Promise<Project> {
     return this.projectService.updateGeneral(args);
+  }
+
+  @Mutation(() => Project)
+  async updateProjectAvatar(
+    @Args() args: UpdateProjectAvatarDto,
+  ): Promise<Project> {
+    return this.projectService.updateAvatar(args);
+  }
+
+  @Mutation(() => Project)
+  async resetProjectAvatar(
+    @Args() args: ResetProjectAvatarDto,
+  ): Promise<Project> {
+    return this.projectService.resetAvatar(args);
   }
 
   @Mutation(() => Project)
