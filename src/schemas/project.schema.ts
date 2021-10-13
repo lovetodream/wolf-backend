@@ -40,7 +40,8 @@ export class Project {
   description?: string;
 
   @Prop()
-  icon?: Buffer;
+  @Field({ nullable: true })
+  avatar?: string;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'App' }] })
   @Field(() => [App])
