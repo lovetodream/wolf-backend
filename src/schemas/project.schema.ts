@@ -23,7 +23,7 @@ export class Project {
   @Field()
   softDeleted: boolean;
 
-  @Prop()
+  @Prop({ unique: true })
   @Field({ nullable: true })
   alias?: string;
 
