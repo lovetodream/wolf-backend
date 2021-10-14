@@ -45,13 +45,13 @@ export class Project {
 
   // MARK: Security features
 
-  @Prop()
+  @Prop({
+    get: (pin): boolean => {
+      return !!pin;
+    },
+  })
+  @Field(() => Boolean)
   pin?: string;
-
-  @Field()
-  get requiresPin(): boolean {
-    return !!this.pin;
-  }
 
   @Prop()
   @Field({ nullable: true })
