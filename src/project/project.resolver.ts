@@ -7,6 +7,7 @@ import { DeleteProjectDto } from './dto/delete-project.dto';
 import { ResetProjectAvatarDto } from './dto/reset-project-avatar.dto';
 import { UpdateGeneralProjectDto } from './dto/update-general-project.dto';
 import { UpdateProjectAvatarDto } from './dto/update-project-avatar.dto';
+import { UpdateProjectSecuritySettingsDto } from './dto/update-project-security-settings.dto';
 import { ProjectService } from './project.service';
 
 @Resolver()
@@ -49,6 +50,15 @@ export class ProjectResolver {
     @Args() args: ResetProjectAvatarDto,
   ): Promise<Project> {
     return this.projectService.resetAvatar(args);
+  }
+
+  // Security features
+
+  @Mutation(() => Project)
+  async updateProjectSecuritySettings(
+    @Args() args: UpdateProjectSecuritySettingsDto,
+  ): Promise<Project> {
+    return this.projectService.updateSecuritySettings(args);
   }
 
   @Mutation(() => Project)

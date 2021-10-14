@@ -19,6 +19,7 @@ import { UpdateGeneralProjectDto } from './dto/update-general-project.dto';
 import { UpdateProjectPinDto } from './dto/update-project-pin.dto';
 import { UpdateProjectAvatarDto } from './dto/update-project-avatar.dto';
 import { RemoveProjectPinDto } from './dto/remove-project-pin.dto';
+import { UpdateProjectSecuritySettingsDto } from './dto/update-project-security-settings.dto';
 
 @Injectable()
 export class ProjectService {
@@ -86,13 +87,35 @@ export class ProjectService {
     return project.save();
   }
 
+  // Security features
+  async updateSecuritySettings(
+    dto: UpdateProjectSecuritySettingsDto,
+  ): Promise<ProjectDocument> {
+    const project = await this.projectModel.findById(dto.id);
+    if (project.get('pin')) {
+      if (!dto.pin) {
+        throw new UnauthorizedException();
+      }
+
+      if (!compareSync(String(dto.pin), project.get('pin'))) {
+        throw new UnauthorizedException();
+      }
+    }
+    project.strictMode = dto.strictMode;
+    project.recoveryEmail = dto.recoveryEmail;
+    return project.save();
+  }
+
   // TODO: Pins are only cosmetic atm, they don't over any real protection on the endpoints, this needs to be worked on in the future!
 
   async updatePin(dto: UpdateProjectPinDto): Promise<ProjectDocument> {
     const project = await this.projectModel.findById(dto.id);
     const pin = hashSync(String(dto.pin), 10);
 
-    if (!!project.pin && !compareSync(String(dto.previousPin), project.pin)) {
+    if (
+      !!project.get('pin') &&
+      !compareSync(String(dto.previousPin), project.get('pin'))
+    ) {
       throw new UnauthorizedException();
     }
 
@@ -103,7 +126,7 @@ export class ProjectService {
   async removePin(dto: RemoveProjectPinDto): Promise<ProjectDocument> {
     const project = await this.projectModel.findById(dto.id);
 
-    if (!compareSync(String(dto.currentPin), project.pin)) {
+    if (!compareSync(String(dto.currentPin), project.get('pin'))) {
       throw new UnauthorizedException();
     }
 
