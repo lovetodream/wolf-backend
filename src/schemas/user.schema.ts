@@ -17,6 +17,10 @@ export class User {
   @Prop({ get: () => '' })
   password: string;
 
+  @Field()
+  @Prop()
+  admin: boolean;
+
   @Field(() => Date)
   createdAt: Date;
 
