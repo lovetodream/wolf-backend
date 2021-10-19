@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import { compareSync, hashSync } from 'bcrypt';
 import { Response } from 'express';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -47,6 +49,28 @@ export class AuthService {
 
     return savedUser;
   }
+
+  async signIn(dto: SignInDto, res: Response): Promise<User> {
+    const user = await this.userModel.findOne({ email: dto.email });
+
+    if (!compareSync(dto.password, user.password)) {
+      throw new UnauthorizedException();
+    }
+
+    const token = this.jwtService.sign(
+      { sub: user._id, email: user.email },
+      { expiresIn: '2h' },
+    );
+
+    res.cookie('Authorization', `Bearer ${token}`, {
+      maxAge: 100 * 60 * 120,
+      signed: true,
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
+
+    return user;
   }
 }
 
