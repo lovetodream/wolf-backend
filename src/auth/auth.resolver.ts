@@ -13,7 +13,8 @@ export class AuthResolver {
   }
 
   @Mutation(() => User)
-  createAccount(@Args() dto: CreateAccountDto) {
-    return this.authService.create(dto);
+  createAccount(@Args() dto: CreateAccountDto, @Res() res: Response) {
+    return this.authService.create(dto, res);
+  }
   }
 }
