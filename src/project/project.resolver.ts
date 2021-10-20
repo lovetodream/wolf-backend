@@ -1,4 +1,6 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { DeleteResult } from 'src/helper/delete-result';
 import { Project } from 'src/schemas/project.schema';
 import { ArchiveProjectDto } from './dto/archive-project.dto';
@@ -10,6 +12,7 @@ import { UpdateProjectAvatarDto } from './dto/update-project-avatar.dto';
 import { UpdateProjectSecuritySettingsDto } from './dto/update-project-security-settings.dto';
 import { ProjectService } from './project.service';
 
+@UseGuards(GqlAuthGuard)
 @Resolver()
 export class ProjectResolver {
   constructor(private projectService: ProjectService) {}
