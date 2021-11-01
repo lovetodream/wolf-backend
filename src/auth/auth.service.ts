@@ -6,6 +6,7 @@ import { compareSync, hashSync } from 'bcrypt';
 import { Response } from 'express';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
+import { GqlContext } from './auth.resolver';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { SignInDto } from './dto/sign-in.dto';
 
@@ -22,7 +23,7 @@ export class AuthService {
     };
   }
 
-  async create(dto: CreateAccountDto, res: Response): Promise<User> {
+  async create(dto: CreateAccountDto, context: GqlContext): Promise<User> {
     const user = new User();
     user.email = dto.email;
     user.admin = (await this.userModel.count()) === 0;
@@ -38,7 +39,7 @@ export class AuthService {
       { expiresIn: '2h' },
     );
 
-    res.cookie('Authorization', `Bearer ${token}`, {
+    context.req.res.cookie('Authorization', `Bearer ${token}`, {
       maxAge: 100 * 60 * 120,
       signed: true,
       httpOnly: true,
@@ -50,7 +51,7 @@ export class AuthService {
     return savedUser;
   }
 
-  async signIn(dto: SignInDto, res: Response): Promise<User> {
+  async signIn(dto: SignInDto, context: GqlContext): Promise<User> {
     const user = await this.userModel.findOne({ email: dto.email });
 
     if (!compareSync(dto.password, user.password)) {
@@ -62,7 +63,7 @@ export class AuthService {
       { expiresIn: '2h' },
     );
 
-    res.cookie('Authorization', `Bearer ${token}`, {
+    context.req.res.cookie('Authorization', `Bearer ${token}`, {
       maxAge: 100 * 60 * 120,
       signed: true,
       httpOnly: true,

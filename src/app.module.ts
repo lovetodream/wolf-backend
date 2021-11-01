@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { ProjectModule } from './project/project.module';
 import { AppModule as ProjectAppModule } from './app/app.module';
 import { AuthModule } from './auth/auth.module';
+import { Request, Response } from 'express';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
       subscriptions: {
         'graphql-ws': true,
       },
+      context: (req: Request, res: Response) => ({ req, res }),
     }),
     ProjectModule,
     ProjectAppModule,
