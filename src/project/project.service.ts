@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { compareSync, hashSync } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
 import { DeleteResult } from 'src/helper/delete-result';
 import { Project, ProjectDocument } from 'src/schemas/project.schema';
@@ -92,12 +92,17 @@ export class ProjectService {
     dto: UpdateProjectSecuritySettingsDto,
   ): Promise<ProjectDocument> {
     const project = await this.projectModel.findById(dto.id);
-    if (project.get('pin')) {
+    if (project.get('pin', null, { getters: false })) {
       if (!dto.pin) {
         throw new UnauthorizedException();
       }
 
-      if (!compareSync(String(dto.pin), project.get('pin'))) {
+      if (
+        !(await compare(
+          String(dto.pin),
+          project.get('pin', null, { getters: false }),
+        ))
+      ) {
         throw new UnauthorizedException();
       }
     }
@@ -110,11 +115,14 @@ export class ProjectService {
 
   async updatePin(dto: UpdateProjectPinDto): Promise<ProjectDocument> {
     const project = await this.projectModel.findById(dto.id);
-    const pin = hashSync(String(dto.pin), 10);
+    const pin = await hash(String(dto.pin), 10);
 
     if (
       !!project.get('pin') &&
-      !compareSync(String(dto.previousPin), project.get('pin'))
+      !(await compare(
+        String(dto.previousPin),
+        project.get('pin', null, { getters: false }),
+      ))
     ) {
       throw new UnauthorizedException();
     }
@@ -126,7 +134,7 @@ export class ProjectService {
   async removePin(dto: RemoveProjectPinDto): Promise<ProjectDocument> {
     const project = await this.projectModel.findById(dto.id);
 
-    if (!compareSync(String(dto.currentPin), project.get('pin'))) {
+    if (!(await compare(String(dto.currentPin), project.get('pin')))) {
       throw new UnauthorizedException();
     }
 

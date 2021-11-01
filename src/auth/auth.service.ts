@@ -2,8 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { compareSync, hashSync } from 'bcrypt';
-import { Response } from 'express';
+import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { GqlContext } from './auth.resolver';
@@ -27,7 +26,7 @@ export class AuthService {
     const user = new User();
     user.email = dto.email;
     user.admin = (await this.userModel.count()) === 0;
-    user.password = hashSync(dto.password, 10);
+    user.password = await hash(dto.password, 10);
 
     const savedUser = await this.userModel.create(user);
 
@@ -54,7 +53,12 @@ export class AuthService {
   async signIn(dto: SignInDto, context: GqlContext): Promise<User> {
     const user = await this.userModel.findOne({ email: dto.email });
 
-    if (!compareSync(dto.password, user.password)) {
+    if (
+      !(await compare(
+        dto.password,
+        user.get('password', null, { getters: false }),
+      ))
+    ) {
       throw new UnauthorizedException();
     }
 
