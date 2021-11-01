@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, SetMetadata } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
@@ -16,3 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return { userID: payload.sub, email: payload.email };
   }
 }
+
+export const IS_PUBLIC_KEY = 'isPublic';
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
