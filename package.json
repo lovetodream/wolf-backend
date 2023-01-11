@@ -36,7 +36,7 @@
     "axios": "^0.21.4",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
-    "class-validator": "^0.13.1",
+    "class-validator": "^0.14.0",
     "graphql": "^15.5.3",
     "graphql-ws": "^5.5.0",
     "mongoose": "^6.0.5",
